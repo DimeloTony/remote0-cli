@@ -1,0 +1,52 @@
+{
+	"name": "remote0",
+	"version": "0.0.2",
+	"description": "CLI to build a file registry and add items into a project from a URL.",
+	"keywords": [
+		"registry",
+		"cli",
+		"npx",
+		"components"
+	],
+	"license": "ISC",
+	"author": "DimeloTony",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"bin": {
+		"remote0": "dist/index.js"
+	},
+	"engines": {
+		"node": ">=18.17"
+	},
+	"files": [
+		"dist/index.js",
+		"dist/index.d.ts",
+		"dist/commands",
+		"dist/data.js",
+		"dist/data.d.ts",
+		"dist/schemas.js",
+		"dist/schemas.d.ts",
+		"dist/utils.js",
+		"dist/utils.d.ts"
+	],
+	"scripts": {
+		"clean": "node --input-type=module --eval \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\"",
+		"build": "npm run clean && tsc",
+		"format:check": "prettier --check package.json tsconfig.json src tests README.md dev/CLI.md",
+		"test": "npm run build && node --test tests/*.test.js",
+		"prepublishOnly": "npm run format:check && npm test",
+		"devServer": "portless remote0 node src/dev/server.ts",
+		"devAdd": "NODE_EXTRA_CA_CERTS=\"$HOME/.portless/ca.pem\" bun src/index.js add",
+		"createSchema": "bun src/dev/create.ts"
+	},
+	"dependencies": {
+		"@clack/prompts": "^1.8.0",
+		"zod": "^4.6.2"
+	},
+	"devDependencies": {
+		"@types/node": "^22.20.2",
+		"prettier": "3.9.6",
+		"typescript": "7.0.2"
+	}
+}

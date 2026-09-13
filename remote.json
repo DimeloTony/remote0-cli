@@ -1,0 +1,85 @@
+{
+	"$schema": "./public/schema.json",
+	"name": "Remote0",
+	"description": "All the files for remote0 CLI.",
+	"items": [
+		{
+			"name": "cli",
+			"dependencies": ["zod", "@clack/prompts@^1.8.0"],
+			"files": [
+				{
+					"type": "file",
+					"path": "src/index.ts",
+					"target": "dev/app/cli/index.ts"
+				},
+				{
+					"type": "file",
+					"path": "src/schemas.ts",
+					"target": "dev/app/cli/schemas.ts"
+				},
+				{
+					"type": "file",
+					"path": "src/utils.ts",
+					"target": "dev/app/cli/utils/index.ts"
+				}
+			]
+		},
+		{
+			"name": "example",
+			"description": "Example item installed through an item dependency.",
+			"files": [
+				{
+					"type": "file",
+					"path": "dev/example-item.txt",
+					"target": "dev/app/example-item.txt"
+				}
+			]
+		},
+		{
+			"name": "test",
+			"itemDependencies": ["https://remote0.localhost/r/example.json"],
+			"files": [
+				{
+					"type": "file",
+					"path": "public/images/apple-icon.png",
+					"target": "dev/app/public/images/apple-icon.png"
+				},
+				{
+					"type": "file",
+					"path": "public/images/avatar-demo.svg",
+					"target": "dev/app/public/images/avatar-demo.svg"
+				},
+				{
+					"type": "file",
+					"path": "public/images/favicon.ico",
+					"target": "dev/app/public/images/favicon.ico"
+				},
+				{
+					"type": "file",
+					"path": "public/images/favicon.svg",
+					"target": "dev/app/public/images/favicon.svg"
+				},
+				{
+					"type": "file",
+					"path": "public/images/manifest-192.png",
+					"target": "dev/app/public/images/manifest-192.png"
+				},
+				{
+					"type": "file",
+					"path": "public/images/manifest-512.png",
+					"target": "dev/app/public/images/manifest-512.png"
+				},
+				{
+					"type": "url",
+					"path": "https://ui.shadcn.com/schema/registry.json",
+					"target": "dev/app/public/remote.json"
+				},
+				{
+					"type": "url",
+					"path": "https://github.com/shadcn.png",
+					"target": "dev/app/remote0/images/shadcn.png"
+				}
+			]
+		}
+	]
+}
