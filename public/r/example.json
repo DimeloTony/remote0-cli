@@ -1,0 +1,12 @@
+{
+    "name": "example",
+    "files": [
+        {
+            "type": "file",
+            "path": "dev/example-item.txt",
+            "target": "dev/app/example-item.txt",
+            "content": "Installed from the example item dependency.\n"
+        }
+    ],
+    "description": "Example item installed through an item dependency."
+}
