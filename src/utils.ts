@@ -99,9 +99,11 @@ export function getAllowedFileExtension(filePath: string) {
 		// Keep local paths unchanged.
 	}
 
+	const fileName = path.basename(pathWithoutQuery).toLowerCase();
 	const fileExt = path.extname(pathWithoutQuery).toLowerCase();
-	if (!fileExt || !ALLOW_FILE_EXTS.includes(fileExt)) return false;
-	return fileExt;
+	const allowedFilePart = ALLOW_FILE_EXTS.includes(fileName) ? fileName : fileExt;
+	if (!allowedFilePart || !ALLOW_FILE_EXTS.includes(allowedFilePart)) return false;
+	return allowedFilePart;
 }
 
 /** Encodes text as Base64 or decodes Base64 into UTF-8 text */

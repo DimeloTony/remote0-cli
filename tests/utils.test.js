@@ -48,6 +48,13 @@ test("getAllowedFileExtension supports URL queries and uppercase extensions", ()
 	assert.equal(getAllowedFileExtension("src/example.exe"), false);
 });
 
+test("getAllowedFileExtension supports common config files and lockfiles", () => {
+	assert.equal(getAllowedFileExtension(".prettierrc"), ".prettierrc");
+	assert.equal(getAllowedFileExtension("config/.gitignore"), ".gitignore");
+	assert.equal(getAllowedFileExtension("bun.lock"), ".lock");
+	assert.equal(getAllowedFileExtension("bun.lockb"), ".lockb");
+});
+
 test("encodeOrDecodeBase64 creates path-safe values and round trips text", () => {
 	const value = "https://example.com/an image.png";
 	const encodedValue = encodeOrDecodeBase64("encode", value);

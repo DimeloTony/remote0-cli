@@ -78,6 +78,21 @@
 					"type": "url",
 					"path": "https://github.com/shadcn.png",
 					"target": "dev/app/remote0/images/shadcn.png"
+				},
+				{
+					"type": "file",
+					"path": ".prettierrc",
+					"target": "dev/app/.prettierrc"
+				},
+				{
+					"type": "file",
+					"path": ".gitignore",
+					"target": "dev/app/.gitignore"
+				},
+				{
+					"type": "file",
+					"path": "bun.lock",
+					"target": "dev/app/bun.lock"
 				}
 			]
 		}

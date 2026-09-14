@@ -19,6 +19,9 @@ export const DATA_EXTS = [".json", ".jsonc", ".yaml", ".yml", ".toml", ".xml"];
 /** File extensions used for plain-text and Markdown files */
 export const TEXT_EXTS = [".txt", ".md", ".mdx"];
 
+/** File names and extensions used by common project configuration files */
+export const CONFIG_EXTS = [".prettierrc", ".prettierignore", ".gitignore", ".gitattributes", ".gitmodules", ".editorconfig", ".npmrc", ".npmignore", ".nvmrc", ".node-version", ".yarnrc", ".yarnrc.yml", ".eslintrc", ".eslintignore", ".babelrc", ".stylelintrc", ".dockerignore", ".lock", ".lockb"];
+
 /** File extensions used for image files, including SVG and raster formats */
 export const IMAGES_EXTS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico"];
 
@@ -26,4 +29,4 @@ export const IMAGES_EXTS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".
 export const FRAMEWORK_EXTS = [".vue", ".svelte"];
 
 /** All file extensions accepted by the application */
-export const ALLOW_FILE_EXTS = [...WEB_EXTS, ...JAVASCRIPT_EXTS, ...TYPESCRIPT_EXTS, ...DATA_EXTS, ...TEXT_EXTS, ...IMAGES_EXTS, ...FRAMEWORK_EXTS];
+export const ALLOW_FILE_EXTS = [...WEB_EXTS, ...JAVASCRIPT_EXTS, ...TYPESCRIPT_EXTS, ...DATA_EXTS, ...TEXT_EXTS, ...CONFIG_EXTS, ...IMAGES_EXTS, ...FRAMEWORK_EXTS];

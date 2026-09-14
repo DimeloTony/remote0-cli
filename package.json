@@ -1,6 +1,6 @@
 {
 	"name": "remote0",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "CLI to build a file registry and add items into a project from a URL.",
 	"homepage": "https://github.com/DimeloTony/remote0-cli#readme",
 	"repository": {
