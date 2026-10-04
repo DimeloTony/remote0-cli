@@ -49,13 +49,13 @@ npx remote0 build
 npx remote0 build path/to/registry.json
 ```
 
-If no path is supplied, the command reads `remote.json` from the current working directory. Paths are resolved relative to the directory from which the CLI is run, not relative to the installed package.
+If no path is supplied, the command reads `registry.json` from the current working directory. Paths are resolved relative to the directory from which the CLI is run, not relative to the installed package.
 
 ### Detailed flow
 
 `src/commands/build.ts` performs the following steps:
 
-1. Select the registry definition path from `args[1]`, falling back to `remote.json`.
+1. Select the registry definition path from `args[1]`, falling back to `registry.json`.
 2. Check that the registry file exists.
 3. Read and parse the local JSON file with `readJson()`.
 4. Validate the parsed object against `registrySchema` using Zod.
@@ -84,7 +84,13 @@ Each generated item starts with its `name` and `files`. Optional `description`, 
 
 Each file entry has a `type` of `file` or `url`.
 
-For a local file (`type: "file"`):
+For inline text (`type: "file"` with `content` and `target`):
+
+- The text is embedded directly without reading a source file or checking its extension.
+- The generated entry uses `target` as both its `path` and `target` for compatibility with existing installers.
+- Empty strings create empty files, and placeholders are written literally.
+
+For a local file (`type: "file"` with `path`):
 
 - Binary image files with extensions `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, or `.ico` are copied to `r/binary`.
 - Other files are read as UTF-8 text and embedded directly in the generated item JSON as `content`.
@@ -208,7 +214,7 @@ type Registry = {
 	$schema?: string;
 	name: string;
 	description?: string;
-	items: Item[];
+	items: RegistryItem[];
 };
 ```
 
@@ -223,6 +229,8 @@ type Item = {
 	devDependencies?: string[];
 	files: File[];
 };
+
+type RegistryItem = Omit<Item, "files"> & { files: RegistryFile[] };
 ```
 
 ### File entry
@@ -235,9 +243,11 @@ type File = {
 	content?: string;
 	isLocalBinary?: boolean;
 };
+
+type RegistryFile = { type: "file" | "url"; path: string; target?: string } | { type: "file"; content: string; target: string };
 ```
 
-`content` and `isLocalBinary` are normally generated metadata. A source registry definition generally supplies only `type`, `path`, and optionally `target`.
+Source registry entries supply either `path` or inline `content`, never both. Inline content requires `type: "file"` and a nonempty `target`. Generated entries include `path` and `content`; `isLocalBinary` is generated metadata and cannot be supplied in a source registry.
 
 ## Supported extensions
 
@@ -281,7 +291,7 @@ npm run build
 
 The build cleans `dist`, compiles the production TypeScript sources, and writes JavaScript and declaration files to `dist`. The package’s executable points at `dist/index.js`, so rebuild after changing TypeScript source before testing the packaged entry point.
 
-The repository also contains a development app copy under `dev/app/cli`. The `remote.json` item named `cli` is configured to package selected source files into that directory. Treat `src/` as the CLI source of truth; update the generated/dev copy through the project’s registry workflow when that copy needs to be refreshed.
+The repository also contains a development app copy under `dev/app/cli`. The `registry.json` item named `cli` is configured to package selected source files into that directory. Treat `src/` as the CLI source of truth; update the generated/dev copy through the project’s registry workflow when that copy needs to be refreshed.
 
 ## Adding or changing a command
 
