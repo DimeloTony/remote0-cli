@@ -9,8 +9,8 @@ import type { ItemSchema } from "../schemas.js";
 export async function buildRegistry(args: string[]) {
 	p.intro("Welcome to remote0");
 
-	// Use the provided registry path or default to remote.json.
-	const registryJsonPath = args[1] || "remote.json";
+	// Use the provided registry path or default to registry.json.
+	const registryJsonPath = args[1] || "registry.json";
 	// Stop when the registry JSON file does not exist.
 	validateOrExit(fs.existsSync(registryJsonPath), `Registry file '${registryJsonPath}' does not exist.`);
 
@@ -53,6 +53,12 @@ export async function buildRegistry(args: string[]) {
 
 		// Process each file in the registry item.
 		for (const file of item.files) {
+			// Store inline text without reading a source file.
+			if (file.content !== undefined) {
+				itemOutputData.files.push({ type: file.type, path: file.target, target: file.target, content: file.content });
+				continue;
+			}
+
 			// Handle files referenced by URL.
 			if (file.type === "url") {
 				const fileUrlExt = getAllowedFileExtension(file.path);

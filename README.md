@@ -13,10 +13,11 @@ npx remote0 build
 bunx remote0 build
 ```
 
+The command reads `registry.json` from the current working directory by default.
 To use a different registry definition:
 
 ```bash
-npx remote0 build path/to/remote.json
+npx remote0 build path/to/registry.json
 ```
 
 The build command validates the registry, reads local files and URLs, and writes:
@@ -46,7 +47,7 @@ Files are written to each file's project-relative `target` path, or to `path` wh
 
 ## Registry format
 
-A registry definition contains a name and one or more items. Each item contains files sourced locally or from a URL:
+A registry definition contains a name and one or more items. Each item contains files sourced locally, from a URL, or from inline text:
 
 ```json
 {
@@ -68,6 +69,11 @@ A registry definition contains a name and one or more items. Each item contains 
 					"type": "url",
 					"path": "https://remote0.dev/example.css",
 					"target": "src/generated/example.css"
+				},
+				{
+					"type": "file",
+					"content": "EXAMPLE=\"value_here\"",
+					"target": ".env"
 				}
 			]
 		}
@@ -77,15 +83,18 @@ A registry definition contains a name and one or more items. Each item contains 
 
 Each file entry supports:
 
-- `type`: `file` for a local path or `url` for a remote resource
-- `path`: the local path or URL to read
-- `target`: optional destination path used by `add`
+- `type`: `file` for a local path or inline text, or `url` for a remote resource
+- `path`: the local path or URL to read; omit when supplying inline `content`
+- `content`: inline text for a `file` entry; use instead of `path`
+- `target`: destination path used by `add`; required for inline content and optional for source paths
+
+Inline content is embedded directly in the generated item JSON without reading a source file or checking its extension. Empty strings create empty files, and placeholders are written literally. Source entries must supply either `path` or `content`, never both. Generated item files include both `path` and `content`, with inline files using `target` as their generated `path` for compatibility with existing installers. The `isLocalBinary` field is generated metadata and cannot be supplied in a source registry.
 
 Each registry item can also declare `itemDependencies`, an array of absolute or relative item URLs. Dependencies are installed recursively before the requested item. Repeated URLs are installed once, and circular dependency chains are rejected.
 
 Supported files include JavaScript, TypeScript, JSON, YAML, TOML, CSS, HTML, Markdown, SVG, Vue, Svelte, and common image formats. See `src/data.ts` for the complete extension list.
 
-The included `remote.json` demonstrates both local and URL-backed files. Use `https://remote0.dev/schema.json` in registry definitions for editor validation.
+The included `registry.json` demonstrates both local and URL-backed files. Use `https://remote0.dev/schema.json` in registry definitions for editor validation.
 
 ## License
 
@@ -107,7 +116,7 @@ npm install
 npm run build
 ```
 
-Generate the registry files from `remote.json`, then start the development server:
+Generate the registry files from `registry.json`, then start the development server:
 
 ```bash
 node dist/index.js build
@@ -124,6 +133,6 @@ npm run devAdd -- https://remote0.localhost/r/test.json
 
 The `devAdd` script runs the CLI with Bun and sets `NODE_EXTRA_CA_CERTS` to `$HOME/.portless/ca.pem` so it trusts the local Portless HTTPS certificate. No separate certificate export is needed when using this script.
 
-For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `node dist/index.js build` after changing `remote.json` or its source files.
+For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `node dist/index.js build` after changing `registry.json` or its source files.
 
 The compiled entry point is `dist/index.js`, the source entry point is `src/index.ts`, and the development server is defined in `src/dev/server.ts`.

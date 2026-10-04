@@ -10,7 +10,7 @@ const COMMAND = ARGS[0] as "build" | "add";
 
 // Reject unsupported commands before dispatching to a command handler.
 if (!COMMANDS.includes(COMMAND)) {
-	log.error("Run a valid command: 'build', 'build remote.json', or 'add <registry-item-url>'.");
+	log.error("Run a valid command: 'build', 'build registry.json', or 'add <registry-item-url>'.");
 	process.exit(1);
 }
 

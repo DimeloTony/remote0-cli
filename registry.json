@@ -72,7 +72,7 @@
 				{
 					"type": "url",
 					"path": "https://ui.shadcn.com/schema/registry.json",
-					"target": "dev/app/public/remote.json"
+					"target": "dev/app/public/registry.json"
 				},
 				{
 					"type": "url",
@@ -93,6 +93,11 @@
 					"type": "file",
 					"path": "bun.lock",
 					"target": "dev/app/bun.lock"
+				},
+				{
+					"type": "file",
+					"content": "EXAMPLE=\"value_here\"",
+					"target": "dev/app/.env"
 				}
 			]
 		}

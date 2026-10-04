@@ -16,7 +16,7 @@
 		},
 		"include": {
 			"type": "array",
-			"description": "An array of relative paths to remote.json files to include in this registry.",
+			"description": "An array of relative paths to registry.json files to include in this registry.",
 			"items": {
 				"type": "string"
 			}

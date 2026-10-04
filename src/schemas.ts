@@ -35,12 +35,27 @@ export const itemSchema = z.object({
 	files: z.array(fileSchema),
 });
 
+/** Describes a source file or inline text with a required output target */
+const registryFileSchema = z.union([
+	fileSchema.safeExtend({
+		content: z.never().optional(),
+		isLocalBinary: z.never().optional(),
+	}),
+	z.object({
+		type: z.literal("file"),
+		content: z.string().describe("Contains inline text to write to the target file."),
+		target: z.string().min(1),
+		path: z.never().optional(),
+		isLocalBinary: z.never().optional(),
+	}),
+]);
+
 /** Describes a named registry with an optional description and a list of items */
 export const registrySchema = z.object({
 	$schema: z.string().optional(),
 	name: z.string(),
 	description: z.string().optional(),
-	items: z.array(itemSchema),
+	items: z.array(itemSchema.extend({ files: z.array(registryFileSchema) })),
 });
 
 /** Names of the available validation schemas */

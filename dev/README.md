@@ -26,7 +26,7 @@ dev/
 ## `dev/app`
 
 `dev/app` is a sample destination project used to exercise registry items. The
-paths in the root `remote.json` manifest point into this directory, so it shows
+paths in the root `registry.json` manifest point into this directory, so it shows
 what a consumer project might receive from `remote0 add`.
 
 ### `dev/app/cli`
@@ -55,15 +55,13 @@ This directory contains public-facing test data and image fixtures:
 - `registry.json` is a checked-in registry-schema fixture based on the shadcn
   registry format.
 
-The current `remote.json` manifest names the URL-backed target as
-`dev/app/public/remote.json`, while the checked-in fixture is named
-`registry.json`. Treat this as a filename mismatch in the current development
-snapshot when regenerating or debugging the fixture.
+The root `registry.json` manifest installs the URL-backed schema fixture at
+`dev/app/public/registry.json`.
 
 ### `dev/app/remote0`
 
 `remote0/images/shadcn.png` is a binary image downloaded from the URL in
-`remote.json`. It demonstrates where a URL-backed binary file is intended to be
+`registry.json`. It demonstrates where a URL-backed binary file is intended to be
 restored when a registry item is added.
 
 ## `dev/skills/update-comments`
@@ -73,28 +71,31 @@ workflow and constraints for adding concise comments and schema descriptions
 without changing behavior. `agents/openai.yaml` provides the skill's display
 metadata.
 
-This skill is independent of the `remote.json` registry fixture and is not part
+This skill is independent of the `registry.json` registry fixture and is not part
 of the published CLI package.
 
 ## How the fixture is produced
 
-The root [`remote.json`](../remote.json) is the registry definition. It has two
+The root [`registry.json`](../registry.json) is the registry definition. It has three
 items:
 
 - `cli` copies selected TypeScript files from `src/` into `dev/app/cli` and
   declares the CLI dependencies.
+- `example` copies the text fixture used by the `test` item dependency.
 - `test` copies local images and downloads the shadcn registry schema and image
   into `dev/app`.
 
 From the repository root, build the registry with:
 
 ```bash
-bun run build
+npm run build
+node dist/index.js build
 ```
 
-The build reads `remote.json`, validates it, embeds text files into generated
+The build reads `registry.json`, validates it, embeds text files into generated
 item JSON, and copies binary images into `public/r/binary/`. The generated item
-files are written to `public/r/cli.json` and `public/r/test.json`.
+files are written to `public/r/cli.json`, `public/r/example.json`, and
+`public/r/test.json`.
 
 The root README documents the intended `build` and `add` workflows. Keep in
 mind that the current `src/commands/add.ts` returns immediately after checking
@@ -104,7 +105,7 @@ until that implementation is completed.
 ## Maintenance guidance
 
 - Make source changes in `src/`, not in generated files under `dev/app/cli`.
-- Update `remote.json` when changing what the fixture should contain.
+- Update `registry.json` when changing what the fixture should contain.
 - Rebuild from the repository root after changing the registry definition or
   source files.
 - Do not treat `dev/app` as a package with its own dependencies or build
