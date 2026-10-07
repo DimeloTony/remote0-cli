@@ -53,7 +53,7 @@ async function addRegistryItemFromUrl(itemUrl: URL, state: AddRegistryState) {
 	state.installedItemUrls.add(itemUrlKey);
 }
 
-/** Writes every file from a validated registry item */
+/** Writes files from a validated registry item, respecting overwrite choices */
 async function writeRegistryItemFiles(inputData: ItemSchema, itemUrl: URL, overwrite: boolean) {
 	let existingFilePaths: string[] = [];
 	try {
@@ -62,12 +62,33 @@ async function writeRegistryItemFiles(inputData: ItemSchema, itemUrl: URL, overw
 		validateOrExit(false, error instanceof Error ? error.message : "Unable to validate registry file paths.");
 	}
 
-	// If `--overwrite` was not provided and destination files already exist, ask before overwriting them.
+	const skippedFilePaths = new Set<string>();
+	// If `--overwrite` was not provided and destination files already exist, ask which ones to overwrite.
 	if (!overwrite && existingFilePaths.length > 0) {
-		existingFilePaths.forEach((file) => p.log.warn(`File ${file} already exists and will be overwritten.`));
-		const shouldOverwrite = await p.confirm({ message: "Overwrite files?" });
-		// Cancel when the user declines to overwrite existing files.
-		if (!shouldOverwrite) validateOrExit(shouldOverwrite, "Okay, canceling now.");
+		existingFilePaths.forEach((file) => p.log.warn(`File ${file} already exists.`));
+		const overwriteChoice = await p.select({
+			message: "Some files already exist. What would you like to do?",
+			options: [
+				{ value: "all", label: "Overwrite all" },
+				{ value: "select", label: "Select files to overwrite" },
+				{ value: "cancel", label: "Cancel" },
+			],
+		});
+		validateOrExit(!p.isCancel(overwriteChoice) && overwriteChoice !== "cancel", "Okay, canceling now.");
+
+		if (overwriteChoice === "select") {
+			const selectedFiles = await p.multiselect({
+				message: "Select files to overwrite:",
+				options: existingFilePaths.map((file) => ({ value: file, label: file })),
+				required: false,
+			});
+			validateOrExit(Array.isArray(selectedFiles), "Okay, canceling now.");
+			const selectedFilePaths = new Set(selectedFiles.map((file) => resolveProjectFilePath(file)));
+			for (const file of existingFilePaths) {
+				const filePath = resolveProjectFilePath(file);
+				if (!selectedFilePaths.has(filePath)) skippedFilePaths.add(filePath);
+			}
+		}
 	}
 
 	// Process each file in the registry item.
@@ -78,6 +99,10 @@ async function writeRegistryItemFiles(inputData: ItemSchema, itemUrl: URL, overw
 			fileTarget = resolveProjectFilePath(file.target || file.path);
 		} catch (error: unknown) {
 			validateOrExit(false, error instanceof Error ? error.message : "Unable to resolve the registry file path.");
+		}
+		if (skippedFilePaths.has(fileTarget)) {
+			p.log.info(`Skipping existing file ${fileTarget}`);
+			continue;
 		}
 
 		// Handle a non-binary file.

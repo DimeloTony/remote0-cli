@@ -5,8 +5,8 @@ import { extname, relative, resolve } from "node:path";
 
 /** Directory whose files are served by the development server */
 const PUBLIC_DIR = `${process.cwd()}/public`;
-/** Port used by the development server, defaulting to 4002 */
-const PORT = Number(process.env.PORT) || 4002;
+/** Port used by the development server, defaulting to 8001 */
+const PORT = Number(process.env.PORT) || 8001;
 
 /** Maps file extensions to their response MIME types */
 const MIME_TYPES: Record<string, string> = {

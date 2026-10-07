@@ -2,10 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import * as p from "@clack/prompts";
-import { ALLOW_FILE_EXTS } from "../data.js";
-import * as schemas from "../schemas.js";
+import { ALLOW_FILE_EXTS } from "./data.js";
+import * as schemas from "./schemas.js";
 import type { infer as Infer } from "zod";
-import type { Schemas, FileSchema } from "../schemas.js";
+import type { Schemas, FileSchema } from "./schemas.js";
 
 /** Provides color-coded methods for normal, error, and successful log messages */
 export const log = {
@@ -99,9 +99,11 @@ export function getAllowedFileExtension(filePath: string) {
 		// Keep local paths unchanged.
 	}
 
+	const fileName = path.basename(pathWithoutQuery).toLowerCase();
 	const fileExt = path.extname(pathWithoutQuery).toLowerCase();
-	if (!fileExt || !ALLOW_FILE_EXTS.includes(fileExt)) return false;
-	return fileExt;
+	const allowedFilePart = ALLOW_FILE_EXTS.includes(fileName) ? fileName : fileExt;
+	if (!allowedFilePart || !ALLOW_FILE_EXTS.includes(allowedFilePart)) return false;
+	return allowedFilePart;
 }
 
 /** Encodes text as Base64 or decodes Base64 into UTF-8 text */
