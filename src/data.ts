@@ -1,11 +1,11 @@
 /** File extensions treated as binary image files */
-export const BINARY_IMAGE_EXTS = [".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico"];
+export const BINARY_IMAGE_EXTS = [".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".avif"];
 
 /** Command names supported by the CLI */
 export const COMMANDS = ["build", "add"] as const;
 
 /** File extensions commonly used for web assets and stylesheets */
-export const WEB_EXTS = [".html", ".htm", ".css", ".scss", ".sass", ".less"];
+export const WEB_EXTS = [".html", ".htm", ".css", ".scss", ".sass", ".less", ".pcss", ".postcss", ".styl"];
 
 /** File extensions used for JavaScript source files */
 export const JAVASCRIPT_EXTS = [".js", ".jsx", ".mjs", ".cjs"];
@@ -14,19 +14,19 @@ export const JAVASCRIPT_EXTS = [".js", ".jsx", ".mjs", ".cjs"];
 export const TYPESCRIPT_EXTS = [".ts", ".tsx", ".mts", ".cts"];
 
 /** File extensions used for structured data files */
-export const DATA_EXTS = [".json", ".jsonc", ".yaml", ".yml", ".toml", ".xml"];
+export const DATA_EXTS = [".json", ".jsonc", ".yaml", ".yml", ".toml", ".xml", ".json5", ".csv", ".graphql", ".gql"];
 
 /** File extensions used for plain-text and Markdown files */
-export const TEXT_EXTS = [".txt", ".md", ".mdx"];
+export const TEXT_EXTS = [".txt", ".md", ".mdx", ".markdown"];
 
 /** File names and extensions used by common project configuration files */
-export const CONFIG_EXTS = [".prettierrc", ".prettierignore", ".gitignore", ".gitattributes", ".gitmodules", ".editorconfig", ".npmrc", ".npmignore", ".nvmrc", ".node-version", ".yarnrc", ".yarnrc.yml", ".eslintrc", ".eslintignore", ".babelrc", ".stylelintrc", ".dockerignore", ".lock", ".lockb"];
+export const CONFIG_EXTS = [".prettierrc", ".prettierignore", ".gitignore", ".gitattributes", ".gitmodules", ".editorconfig", ".npmrc", ".npmignore", ".nvmrc", ".node-version", ".yarnrc", ".yarnrc.yml", ".eslintrc", ".eslintignore", ".babelrc", ".stylelintrc", ".dockerignore", ".lock", ".lockb", ".env.example", ".browserslistrc", ".swcrc"];
 
 /** File extensions used for image files, including SVG and raster formats */
-export const IMAGES_EXTS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico"];
+export const IMAGES_EXTS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".avif"];
 
 /** File extensions used for supported frontend framework files */
-export const FRAMEWORK_EXTS = [".vue", ".svelte"];
+export const FRAMEWORK_EXTS = [".vue", ".svelte", ".svx", ".astro"];
 
 /** All file extensions accepted by the application */
 export const ALLOW_FILE_EXTS = [...WEB_EXTS, ...JAVASCRIPT_EXTS, ...TYPESCRIPT_EXTS, ...DATA_EXTS, ...TEXT_EXTS, ...CONFIG_EXTS, ...IMAGES_EXTS, ...FRAMEWORK_EXTS];
