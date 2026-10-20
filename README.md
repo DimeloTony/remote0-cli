@@ -45,6 +45,14 @@ The `add` argument must be the URL of a generated registry item JSON file, such 
 
 Files are written to each file's project-relative `target` path, or to `path` when no target is provided. Paths that resolve outside the current project are rejected. Declared `dependencies` and `devDependencies` are installed automatically using the package manager detected from the current project's lockfile.
 
+If destination files already exist, the CLI offers to overwrite all, select files to overwrite, or cancel. Unselected existing files are left untouched, and new files are written normally. Each registry item, including dependencies, can prompt separately.
+
+To overwrite all existing files without prompting:
+
+```bash
+npx remote0 add https://remote0.dev/r/item.json --overwrite
+```
+
 ## Registry format
 
 A registry definition contains a name and one or more items. Each item contains files sourced locally, from a URL, or from inline text:
@@ -104,10 +112,9 @@ ISC
 
 Requirements:
 
-- Node.js with support for ES modules and the Fetch API
+- Node.js 18.17 or later
 - npm, pnpm, Yarn, or Bun
-- Bun for the `devAdd` script
-- Portless installed and available on your PATH for the development server
+- Bun for the development scripts and schema generation
 
 Install dependencies and build the CLI:
 
@@ -119,20 +126,43 @@ npm run build
 Generate the registry files from `registry.json`, then start the development server:
 
 ```bash
-node dist/index.js build
-npm run devServer
+npm run dev:build
+npm run dev
 ```
 
-Portless exposes the development server at `https://remote0.localhost`. The server serves the `public/` directory, including generated registry items under `/r/`.
+The server serves the `public/` directory at `http://localhost:8001`, including generated registry items under `/r/`. Set the `PORT` environment variable to use a different port.
 
-In another terminal, add a local registry item:
+In another terminal, add the local CLI registry item:
 
 ```bash
-npm run devAdd -- https://remote0.localhost/r/test.json
+npm run dev:add
 ```
 
-The `devAdd` script runs the CLI with Bun and sets `NODE_EXTRA_CA_CERTS` to `$HOME/.portless/ca.pem` so it trusts the local Portless HTTPS certificate. No separate certificate export is needed when using this script.
+The `dev:add` script runs `bun src/index.ts add http://localhost:8001/r/cli.json`. To add a different item or use a different port, run the source CLI directly:
 
-For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `node dist/index.js build` after changing `registry.json` or its source files.
+```bash
+bun src/index.ts add http://localhost:8001/r/test.json
+```
+
+For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `npm run dev:build` after changing `registry.json` or its source files.
+
+Generate `public/schema.json` from the registry schema:
+
+```bash
+npm run create:schema
+```
+
+Check formatting and run the tests, which also build the CLI:
+
+```bash
+npm run format:check
+npm test
+```
+
+Build and publish the package with public access:
+
+```bash
+npm run publish
+```
 
 The compiled entry point is `dist/index.js`, the source entry point is `src/index.ts`, and the development server is defined in `src/dev/server.ts`.
