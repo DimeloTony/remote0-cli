@@ -30,7 +30,7 @@ public/
         └── <encoded-file-name>.<extension>
 ```
 
-Text files are embedded in the generated item JSON. Binary image files (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, and `.ico`) are copied into `r/binary/` and referenced from the item JSON.
+Text files are embedded in the generated item JSON. Binary image files (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.ico`, and `.avif`) are copied into `r/binary/` and referenced from the item JSON.
 
 ### Add a registry item
 
