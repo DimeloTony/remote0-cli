@@ -1,6 +1,6 @@
 ## Project
 
-remote0 is a TypeScript CLI for building file registries and adding registry items to a project from a URL. It runs on Node.js with ES modules, uses pnpm, uses Zod for registry validation, and uses @clack/prompts for CLI output and prompts.
+remote0 is a TypeScript CLI for building file registries and adding registry items to a project from a URL. It runs on Node.js with ES modules, uses pnpm through the `pn` and `pnx` commands, uses Zod for registry validation, and uses @clack/prompts for CLI output and prompts.
 
 ## Important Files
 
@@ -35,8 +35,8 @@ remote0 is a TypeScript CLI for building file registries and adding registry ite
 
 ## Verification
 
-- Run `pnpm run format:check` after making changes
-- Run `pnpm test` after making changes
+- Run `pn run format:check` after making changes
+- Run `pn test` after making changes
 - Add or update tests in `tests/` when changing behavior
 - Report any failing checks or tests to the user
 
