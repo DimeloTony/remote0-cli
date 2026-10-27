@@ -112,22 +112,22 @@ ISC
 
 Requirements:
 
-- Node.js 18.17 or later
-- npm, pnpm, Yarn, or Bun
-- Bun for the development scripts and schema generation
+- Node.js 18.17 or later to run the published CLI
+- Node.js 22.18 or later to run the TypeScript development scripts directly
+- pnpm
 
 Install dependencies and build the CLI:
 
 ```bash
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 Generate the registry files from `registry.json`, then start the development server:
 
 ```bash
-npm run dev:build
-npm run dev
+pnpm run dev:build
+pnpm run dev
 ```
 
 The server serves the `public/` directory at `http://localhost:8001`, including generated registry items under `/r/`. Set the `PORT` environment variable to use a different port.
@@ -135,34 +135,34 @@ The server serves the `public/` directory at `http://localhost:8001`, including 
 In another terminal, add the local CLI registry item:
 
 ```bash
-npm run dev:add
+pnpm run dev:add
 ```
 
-The `dev:add` script runs `bun src/index.ts add http://localhost:8001/r/cli.json`. To add a different item or use a different port, run the source CLI directly:
+The `dev:add` script runs `node src/index.ts add http://localhost:8001/r/cli.json`. To add a different item or use a different port, run the source CLI directly:
 
 ```bash
-bun src/index.ts add http://localhost:8001/r/test.json
+node src/index.ts add http://localhost:8001/r/test.json
 ```
 
-For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `npm run dev:build` after changing `registry.json` or its source files.
+For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `pnpm run dev:build` after changing `registry.json` or its source files.
 
 Generate `public/schema.json` from the registry schema:
 
 ```bash
-npm run create:schema
+pnpm run create:schema
 ```
 
 Check formatting and run the tests, which also build the CLI:
 
 ```bash
-npm run format:check
-npm test
+pnpm run format:check
+pnpm test
 ```
 
 Build and publish the package with public access:
 
 ```bash
-npm run publish
+pnpm run release
 ```
 
 The compiled entry point is `dist/index.js`, the source entry point is `src/index.ts`, and the development server is defined in `src/dev/server.ts`.

@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as p from "@clack/prompts";
-import { BINARY_IMAGE_EXTS } from "../data.js";
-import { validateOrExit, readJson, validateSchema, getAvailableStaticFolderPath, readFileContent, getAllowedFileExtension, encodeOrDecodeBase64 } from "../utils.js";
-import type { ItemSchema } from "../schemas.js";
+import { BINARY_IMAGE_EXTS } from "../data.ts";
+import { validateOrExit, readJson, validateSchema, getAvailableStaticFolderPath, readFileContent, getAllowedFileExtension, encodeOrDecodeBase64 } from "../utils.ts";
+import type { ItemSchema } from "../schemas.ts";
 
 /** Builds registry item JSON files and copies their referenced assets into the output directory */
 export async function buildRegistry(args: string[]) {

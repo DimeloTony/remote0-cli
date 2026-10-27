@@ -2,12 +2,12 @@
 import * as p from "@clack/prompts";
 import { setTimeout as delay } from "node:timers/promises";
 
-function unwrap<T>(value: T | symbol): T {
+function unwrap<T>(value: T): Exclude<T, symbol> {
 	if (p.isCancel(value)) {
 		p.cancel("Demo cancelled.");
 		process.exit(0);
 	}
-	return value as T;
+	return value as Exclude<T, symbol>;
 }
 
 p.intro("@clack/prompts kitchen sink");

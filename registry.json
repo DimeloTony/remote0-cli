@@ -91,8 +91,8 @@
 				},
 				{
 					"type": "file",
-					"path": "bun.lock",
-					"target": "dev/app/bun.lock"
+					"path": "pnpm-lock.yaml",
+					"target": "dev/app/pnpm-lock.yaml"
 				},
 				{
 					"type": "file",

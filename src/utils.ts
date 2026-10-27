@@ -2,10 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import * as p from "@clack/prompts";
-import { ALLOW_FILE_EXTS } from "./data.js";
-import * as schemas from "./schemas.js";
+import { ALLOW_FILE_EXTS } from "./data.ts";
+import * as schemas from "./schemas.ts";
 import type { infer as Infer } from "zod";
-import type { Schemas, FileSchema } from "./schemas.js";
+import type { Schemas, FileSchema } from "./schemas.ts";
 
 /** Provides color-coded methods for normal, error, and successful log messages */
 export const log = {
@@ -114,26 +114,37 @@ export function encodeOrDecodeBase64(action: "encode" | "decode", data: string) 
 	return Buffer.from(data, "base64url").toString("utf8");
 }
 
+/** Package managers supported for dependency installation */
+export type PackageManager = "bun" | "pnpm" | "yarn" | "npm";
+
 /** Installs packages without passing registry-controlled values through a shell */
-export function installDependencies(packages: string[], asDevDependencies = false) {
+export function installDependencies(packages: string[], asDevDependencies = false, packageManager?: PackageManager) {
 	if (packages.length === 0) return;
 	const workingDirectory = process.cwd();
-	const { command, installArguments } = getDependencyInstallCommand(packages, asDevDependencies, workingDirectory);
+	const { command, installArguments } = getDependencyInstallCommand(packages, asDevDependencies, workingDirectory, packageManager);
 	execFileSync(command, installArguments, { stdio: "ignore", cwd: workingDirectory });
 }
 
+/** Returns the package manager matching a lock file, or undefined when none exists */
+export function getPackageManager(workingDirectory = process.cwd()): PackageManager | undefined {
+	if (fs.existsSync(path.join(workingDirectory, "bun.lock")) || fs.existsSync(path.join(workingDirectory, "bun.lockb"))) return "bun";
+	if (fs.existsSync(path.join(workingDirectory, "pnpm-lock.yaml"))) return "pnpm";
+	if (fs.existsSync(path.join(workingDirectory, "yarn.lock"))) return "yarn";
+	if (fs.existsSync(path.join(workingDirectory, "package-lock.json"))) return "npm";
+}
+
 /** Returns a shell-free package-manager command for installing dependencies */
-export function getDependencyInstallCommand(packages: string[], asDevDependencies = false, workingDirectory = process.cwd()) {
+export function getDependencyInstallCommand(packages: string[], asDevDependencies = false, workingDirectory = process.cwd(), packageManager = getPackageManager(workingDirectory) ?? "npm") {
 	let command: string;
 	let installArguments: string[];
 
-	if (fs.existsSync(path.join(workingDirectory, "bun.lock")) || fs.existsSync(path.join(workingDirectory, "bun.lockb"))) {
+	if (packageManager === "bun") {
 		command = "bun";
 		installArguments = ["add", ...(asDevDependencies ? ["--dev"] : []), "--", ...packages];
-	} else if (fs.existsSync(path.join(workingDirectory, "pnpm-lock.yaml"))) {
+	} else if (packageManager === "pnpm") {
 		command = "pnpm";
 		installArguments = ["add", ...(asDevDependencies ? ["--save-dev"] : []), "--", ...packages];
-	} else if (fs.existsSync(path.join(workingDirectory, "yarn.lock"))) {
+	} else if (packageManager === "yarn") {
 		command = "yarn";
 		installArguments = ["add", ...(asDevDependencies ? ["--dev"] : []), "--", ...packages];
 	} else {

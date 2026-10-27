@@ -4,6 +4,8 @@
 		"target": "ESNext",
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		"rewriteRelativeImportExtensions": true,
+		"erasableSyntaxOnly": true,
 		"declaration": true,
 		"rootDir": "./src",
 		"outDir": "./dist",

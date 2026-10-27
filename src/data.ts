@@ -14,7 +14,7 @@ export const JAVASCRIPT_EXTS = [".js", ".jsx", ".mjs", ".cjs"];
 export const TYPESCRIPT_EXTS = [".ts", ".tsx", ".mts", ".cts"];
 
 /** File extensions used for structured data files */
-export const DATA_EXTS = [".json", ".jsonc", ".yaml", ".yml", ".toml", ".xml", ".json5", ".csv", ".graphql", ".gql"];
+export const DATA_EXTS = [".json", ".jsonc", ".yaml", ".yml", ".toml", ".xml", ".json5", ".csv", ".graphql", ".gql", ".sql", ".prisma"];
 
 /** File extensions used for plain-text and Markdown files */
 export const TEXT_EXTS = [".txt", ".md", ".mdx", ".markdown"];
@@ -25,8 +25,11 @@ export const CONFIG_EXTS = [".prettierrc", ".prettierignore", ".gitignore", ".gi
 /** File extensions used for image files, including SVG and raster formats */
 export const IMAGES_EXTS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".avif"];
 
+/** File extensions used for shell and command scripts */
+export const SCRIPT_EXTS = [".sh", ".bash", ".zsh", ".fish", ".ps1", ".bat", ".cmd"];
+
 /** File extensions used for supported frontend framework files */
 export const FRAMEWORK_EXTS = [".vue", ".svelte", ".svx", ".astro"];
 
 /** All file extensions accepted by the application */
-export const ALLOW_FILE_EXTS = [...WEB_EXTS, ...JAVASCRIPT_EXTS, ...TYPESCRIPT_EXTS, ...DATA_EXTS, ...TEXT_EXTS, ...CONFIG_EXTS, ...IMAGES_EXTS, ...FRAMEWORK_EXTS];
+export const ALLOW_FILE_EXTS = [...WEB_EXTS, ...JAVASCRIPT_EXTS, ...TYPESCRIPT_EXTS, ...DATA_EXTS, ...TEXT_EXTS, ...CONFIG_EXTS, ...SCRIPT_EXTS, ...IMAGES_EXTS, ...FRAMEWORK_EXTS];
