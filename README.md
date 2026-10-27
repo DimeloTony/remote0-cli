@@ -10,6 +10,7 @@ Create or update registry item files under the first existing `static/` or `publ
 
 ```bash
 npx remote0 build
+pnx remote0 build
 bunx remote0 build
 ```
 
@@ -38,6 +39,7 @@ Add a generated registry item to the current project:
 
 ```bash
 npx remote0 add https://remote0.dev/r/item.json
+pnx remote0 add https://remote0.dev/r/item.json
 bunx remote0 add https://remote0.dev/r/item.json
 ```
 
@@ -114,20 +116,20 @@ Requirements:
 
 - Node.js 18.17 or later to run the published CLI
 - Node.js 22.18 or later to run the TypeScript development scripts directly
-- pnpm
+- pnpm with the `pn` and `pnx` commands
 
 Install dependencies and build the CLI:
 
 ```bash
-pnpm install
-pnpm run build
+pn install
+pn run build
 ```
 
 Generate the registry files from `registry.json`, then start the development server:
 
 ```bash
-pnpm run dev:build
-pnpm run dev
+pn run dev:build
+pn run dev
 ```
 
 The server serves the `public/` directory at `http://localhost:8001`, including generated registry items under `/r/`. Set the `PORT` environment variable to use a different port.
@@ -135,7 +137,7 @@ The server serves the `public/` directory at `http://localhost:8001`, including 
 In another terminal, add the local CLI registry item:
 
 ```bash
-pnpm run dev:add
+pn run dev:add
 ```
 
 The `dev:add` script runs `node src/index.ts add http://localhost:8001/r/cli.json`. To add a different item or use a different port, run the source CLI directly:
@@ -144,25 +146,25 @@ The `dev:add` script runs `node src/index.ts add http://localhost:8001/r/cli.jso
 node src/index.ts add http://localhost:8001/r/test.json
 ```
 
-For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `pnpm run dev:build` after changing `registry.json` or its source files.
+For dependencies hosted on the same server, use relative item URLs such as `"itemDependencies": ["/r/example.json"]`. These resolve against the requested item's URL. Regenerate the registry with `pn run dev:build` after changing `registry.json` or its source files.
 
 Generate `public/schema.json` from the registry schema:
 
 ```bash
-pnpm run create:schema
+pn run create:schema
 ```
 
 Check formatting and run the tests, which also build the CLI:
 
 ```bash
-pnpm run format:check
-pnpm test
+pn run format:check
+pn test
 ```
 
 Build and publish the package with public access:
 
 ```bash
-pnpm run release
+pn run release
 ```
 
 The compiled entry point is `dist/index.js`, the source entry point is `src/index.ts`, and the development server is defined in `src/dev/server.ts`.
