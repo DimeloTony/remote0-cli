@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { log } from "./utils.js";
-import { buildRegistry } from "./commands/build.js";
-import { addRegistryItem } from "./commands/add.js";
-import { COMMANDS } from "./data.js";
+import { log } from "./utils.ts";
+import { buildRegistry } from "./commands/build.ts";
+import { addRegistryItem } from "./commands/add.ts";
+import { COMMANDS } from "./data.ts";
 
 const ARGS = process.argv.slice(2);
 const COMMAND = ARGS[0] as "build" | "add";

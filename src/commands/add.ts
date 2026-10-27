@@ -1,13 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as p from "@clack/prompts";
-import { validateOrExit, installDependencies, readFileContent, readJson, validateSchema, getExistingFilePaths, resolveProjectFilePath } from "../utils.js";
-import type { ItemSchema } from "../schemas.js";
+import { validateOrExit, installDependencies, getPackageManager, readFileContent, readJson, validateSchema, getExistingFilePaths, resolveProjectFilePath } from "../utils.ts";
+import type { PackageManager } from "../utils.ts";
+import type { ItemSchema } from "../schemas.ts";
 
 type AddRegistryState = {
 	overwrite: boolean;
 	activeItemUrls: Set<string>;
 	installedItemUrls: Set<string>;
+	packageManager?: PackageManager;
 };
 
 /** Adds a registry item and its files to the current project */
@@ -48,7 +50,7 @@ async function addRegistryItemFromUrl(itemUrl: URL, state: AddRegistryState) {
 	}
 
 	await writeRegistryItemFiles(inputData, itemUrl, state.overwrite);
-	installRegistryItemDependencies(inputData);
+	await installRegistryItemDependencies(inputData, state);
 	state.activeItemUrls.delete(itemUrlKey);
 	state.installedItemUrls.add(itemUrlKey);
 }
@@ -142,13 +144,31 @@ async function writeRegistryItemFiles(inputData: ItemSchema, itemUrl: URL, overw
 }
 
 /** Installs the runtime and development dependencies declared by an item */
-function installRegistryItemDependencies(inputData: ItemSchema) {
+async function installRegistryItemDependencies(inputData: ItemSchema, state: AddRegistryState) {
+	if (!inputData.dependencies && !inputData.devDependencies) return;
+
+	// Ask for a package manager once when no lock file identifies one.
+	state.packageManager ??= getPackageManager();
+	if (!state.packageManager) {
+		const packageManagerChoice = await p.select({
+			message: "No lock file found. Which package manager should install dependencies?",
+			options: [
+				{ value: "npm", label: "npm" },
+				{ value: "pnpm", label: "pnpm" },
+				{ value: "yarn", label: "yarn" },
+				{ value: "bun", label: "bun" },
+			],
+		});
+		validateOrExit(!p.isCancel(packageManagerChoice), "Okay, canceling now.");
+		state.packageManager = packageManagerChoice as PackageManager;
+	}
+
 	let spinner: ReturnType<typeof p.spinner> | undefined;
 	// Install runtime dependencies.
 	if (inputData.dependencies) {
 		spinner = p.spinner({ indicator: "dots" });
 		spinner.start("Installing dependencies");
-		installDependencies(inputData.dependencies);
+		installDependencies(inputData.dependencies, false, state.packageManager);
 	}
 	// Install development dependencies.
 	if (inputData.devDependencies) {
@@ -159,7 +179,7 @@ function installRegistryItemDependencies(inputData: ItemSchema) {
 			spinner = p.spinner({ indicator: "dots" });
 			spinner.start("Installing dev dependencies");
 		}
-		installDependencies(inputData.devDependencies, true);
+		installDependencies(inputData.devDependencies, true, state.packageManager);
 	}
 
 	if (spinner) spinner.stop("Installed dependencies");

@@ -7,7 +7,7 @@ import { execFile, spawnSync } from "node:child_process";
 import test from "node:test";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
-import { encodeOrDecodeBase64, getAllowedFileExtension, getDependencyInstallCommand, resolveProjectFilePath } from "../dist/utils.js";
+import { encodeOrDecodeBase64, getAllowedFileExtension, getDependencyInstallCommand, getPackageManager, resolveProjectFilePath } from "../dist/utils.js";
 import { fileSchema, itemSchema, registrySchema } from "../dist/schemas.js";
 
 const execFileAsync = promisify(execFile);
@@ -42,9 +42,42 @@ test("dependency installation keeps package names as separate process arguments"
 	}
 });
 
+test("getPackageManager detects lock files and returns undefined without one", () => {
+	const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "remote0-pm-"));
+
+	try {
+		assert.equal(getPackageManager(projectRoot), undefined);
+		for (const [lockFile, packageManager] of [
+			["package-lock.json", "npm"],
+			["yarn.lock", "yarn"],
+			["pnpm-lock.yaml", "pnpm"],
+			["bun.lock", "bun"],
+		]) {
+			fs.writeFileSync(path.join(projectRoot, lockFile), "");
+			assert.equal(getPackageManager(projectRoot), packageManager);
+		}
+	} finally {
+		fs.rmSync(projectRoot, { recursive: true, force: true });
+	}
+});
+
+test("dependency installation uses an explicitly selected package manager", () => {
+	const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "remote0-pm-"));
+
+	try {
+		const invocation = getDependencyInstallCommand(["example"], false, projectRoot, "pnpm");
+		assert.equal(invocation.command, "pnpm");
+		assert.deepEqual(invocation.installArguments, ["add", "--", "example"]);
+	} finally {
+		fs.rmSync(projectRoot, { recursive: true, force: true });
+	}
+});
+
 test("getAllowedFileExtension supports URL queries and uppercase extensions", () => {
 	assert.equal(getAllowedFileExtension("https://example.com/image.PNG?size=large"), ".png");
 	assert.equal(getAllowedFileExtension("src/example.ts"), ".ts");
+	assert.equal(getAllowedFileExtension("scripts/setup.sh"), ".sh");
+	assert.equal(getAllowedFileExtension("db/schema.sql"), ".sql");
 	assert.equal(getAllowedFileExtension("src/example.exe"), false);
 });
 

@@ -1,6 +1,6 @@
 {
 	"name": "remote0",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"description": "CLI to build a file registry and add items into a project from a URL.",
 	"homepage": "https://github.com/DimeloTony/remote0-cli#readme",
 	"repository": {
@@ -19,6 +19,7 @@
 	"license": "ISC",
 	"author": "DimeloTony",
 	"type": "module",
+	"packageManager": "pnpm@12.15.0",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"bin": {
@@ -40,14 +41,14 @@
 	],
 	"scripts": {
 		"clean": "node --input-type=module --eval \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\"",
-		"dev": "bun src/dev/server.ts",
-		"dev:build": "bun src/index.ts build",
-		"dev:add": "bun src/index.ts add http://localhost:8001/r/cli.json",
-		"build": "npm run clean && tsc",
+		"dev": "node src/dev/server.ts",
+		"dev:build": "node src/index.ts build",
+		"dev:add": "node src/index.ts add http://localhost:8001/r/cli.json",
+		"build": "pnpm run clean && tsc",
 		"format:check": "prettier --check package.json tsconfig.json src tests README.md dev/CLI.md",
-		"test": "npm run build && node --test tests/*.test.js",
-		"create:schema": "bun src/dev/create.ts",
-		"publish": "npm run build && npm publish --access=public"
+		"test": "pnpm run build && node --test tests/*.test.js",
+		"create:schema": "node src/dev/create.ts",
+		"release": "pnpm run build && pnpm publish --access=public"
 	},
 	"dependencies": {
 		"@clack/prompts": "^1.8.0",
